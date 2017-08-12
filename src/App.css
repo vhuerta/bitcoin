@@ -1,0 +1,17 @@
+.calculator {
+    border: 1px solid red;
+    display: inline-block; 
+    height: 272px;
+    width: 250px;
+}
+
+
+.float-right {
+    float: right;
+    max-width: 250px;
+}
+
+.inline-title {
+    display: inline;
+    padding-right: 300px;
+}
