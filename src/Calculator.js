@@ -5,9 +5,9 @@ class Calculator extends Component {
         super(props);
         this.state = {
             crypto: '',
-            moneda: '',
-            value: 'dollar',
-            toChange: 'bitcoin',
+            coin: '',
+            from: 'usd',
+            to: 'btc',
             isfetching: false,
             btc: {
                 usd:null,
@@ -20,9 +20,8 @@ class Calculator extends Component {
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.setCoinPrice = this.setCoinPrice.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleChangeCurrency = this.handleChangeCurrency.bind(this);
-        this.handleConvertion = this.handleConvertion.bind(this);
+        this.handleCurrencyChange = this.handleCurrencyChange.bind(this);
+        this.doConvertion = this.doConvertion.bind(this);
     }
 
 
@@ -49,80 +48,22 @@ setCoinPrice(data) {
     this.props.passCurrency(this.state.btc, this.state.eth)
 }
 
-    handleInputChange(e) {
-        const target = e.target;
-        const name = target.name;
-        const value = target.value
-        this.setState({
-            [name]: value
-        });
-    }
-    handleChange(e) {
-        this.setState({ value: e.target.value })
-    }
-    handleChangeCurrency(e){
-        this.setState({toChange: e.target.value});
-    }
-
-    handleConvertion(e){
-        const moneyName = e.target.name
-        const money = e.target.value
-        let currencyChange
-
-
-        if (moneyName === 'moneda' && this.state.value === 'dollar' && this.state.toChange === 'bitcoin') {
-            currencyChange = money / this.state.btc.usd
-        this.setState({
-            crypto: currencyChange
-        })
-        }
-        else if (moneyName === 'moneda' && this.state.value === 'euro' && this.state.toChange === 'bitcoin') {
-            currencyChange = money / this.state.btc.eur
-            this.setState({
-                crypto: currencyChange
-            })
-        }
-        else if (moneyName === 'crypto' && this.state.value === 'dollar' && this.state.toChange === 'bitcoin') {
-            currencyChange = money * this.state.btc.usd
-        this.setState({
-            moneda: currencyChange
-        })
-        }
-        else if (moneyName === 'crypto' && this.state.value === 'euro' && this.state.toChange === 'bitcoin') {
-            currencyChange = money * this.state.btc.eur
-            this.setState({
-                moneda: currencyChange
-            })
-        }
-        if (moneyName === 'moneda' && this.state.value === 'dollar' && this.state.toChange === 'ethereum') {
-            currencyChange = money / this.state.eth.usd
-        this.setState({
-            crypto: currencyChange
-        })
-        }
-        else if (moneyName === 'moneda' && this.state.value === 'euro' && this.state.toChange === 'ethereum') {
-            currencyChange = money / this.state.eth.eur
-            this.setState({
-                crypto: currencyChange
-            })
-        }
-        else if (moneyName === 'crypto' && this.state.value === 'dollar' && this.state.toChange === 'ethereum') {
-            currencyChange = money * this.state.eth.usd
-        this.setState({
-            moneda: currencyChange
-        })
-        }
-        else if (moneyName === 'crypto' && this.state.value === 'euro' && this.state.toChange === 'ethereum') {
-            currencyChange = money * this.state.eth.eur
-            this.setState({
-                moneda: currencyChange
-            })
-        }
-        console.log("conversion",currencyChange)
+    handleInputChange(e, type) {
+        this.setState({[type]: e.target.value}, this.doConvertion.bind(this, type));
     }
     
+    handleCurrencyChange(e, type){
+        this.setState({[type === 'coin'? 'from' : 'to']: e.target.value}, this.doConvertion.bind(this, type));
+    }
 
-
+    doConvertion(type){
+        if(type === 'coin') {
+            this.setState({crypto: this.state.coin / this.state[this.state.to][this.state.from]});
+        } else {
+            this.setState({coin: this.state.crypto * this.state[this.state.to][this.state.from]});
+        }
+    }
+    
     render() {
         return (
             <div>
@@ -131,18 +72,18 @@ setCoinPrice(data) {
                     <div className="form-group" style={{ 'paddingTop': '50px' }}>
                         <div className="col-md-6">
                             <input 
-                            type="email" 
+                            type="number" 
                             className="form-control" 
                             placeholder="Currency" 
-                            name="moneda"
-                            value={this.state.moneda}
-                            onChange={this.handleInputChange}
-                            onBlur={this.handleConvertion}/>
+                            name="coin"
+                            value={this.state.coin}
+                            onChange={e => this.handleInputChange(e, 'coin')}
+                            />
                         </div>
                         <div className="col-md-6">
-                            <select value={this.state.value} onChange={this.handleChange}>
-                                <option value="dollar">USD</option>
-                                <option value="euro" >EUR</option>
+                            <select value={this.state.value} onChange={e => this.handleCurrencyChange(e, 'coin')}>
+                                <option value="usd">USD</option>
+                                <option value="eur" >EUR</option>
                             </select>
                         </div>
                     </div>
@@ -150,18 +91,18 @@ setCoinPrice(data) {
                     <div className="form-group" style={{ 'paddingTop': '50px' }}>
                         <div className="col-md-6">
                             <input 
-                            type="email" 
+                            type="number" 
                             className="form-control" 
                             placeholder="CryptoCurrency" 
                             name="crypto"
                             value={this.state.crypto}
-                            onChange={this.handleInputChange}
-                            onBlur={this.handleConvertion}/>
+                            onChange={e => this.handleInputChange(e, 'crypto')}
+                            />
                         </div>
                         <div className="col-md-6">
-                            <select value={this.state.toChange} onChange={this.handleChangeCurrency}>
-                                <option value="bitcoin" >BTC</option>
-                                <option value="ethereum">ETH</option>
+                            <select value={this.state.toChange} onChange={e => this.handleCurrencyChange(e, 'crypto')}>
+                                <option value="btc" >BTC</option>
+                                <option value="eth">ETH</option>
                             </select>
                         </div>
                     </div>
