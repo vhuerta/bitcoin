@@ -57,6 +57,8 @@ setCoinPrice(data) {
     }
 
     doConvertion(type){
+
+        console.log(this.state);
         if(type === 'coin') {
             this.setState({crypto: this.state.coin / this.state[this.state.to][this.state.from]});
         } else {
@@ -81,7 +83,7 @@ setCoinPrice(data) {
                             />
                         </div>
                         <div className="col-md-6">
-                            <select value={this.state.value} onChange={e => this.handleCurrencyChange(e, 'crypto')}>
+                            <select value={this.state.value} onChange={e => this.handleCurrencyChange(e, 'coin')}>
                                 <option value="usd">USD</option>
                                 <option value="eur" >EUR</option>
                             </select>
@@ -100,7 +102,7 @@ setCoinPrice(data) {
                             />
                         </div>
                         <div className="col-md-6">
-                            <select value={this.state.toChange} onChange={e => this.handleCurrencyChange(e, 'coin')}>
+                            <select value={this.state.toChange} onChange={e => this.handleCurrencyChange(e, 'crypto')}>
                                 <option value="btc" >BTC</option>
                                 <option value="eth">ETH</option>
                             </select>
